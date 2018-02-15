@@ -1,54 +1,41 @@
 <template>
   <div class="container">
   <div id="app" class="columns">
-    <div class="column is-two-thirds">
-      <section class="section">
-        <h1 class="title">Fun with Forms in Vue 2.0</h1>
-      </section>
-        <hr>
-        <section class="form">
-          <label class="label">hi</label>
-          <vue-google-autocomplete
-              id="map"
-              classname="form-control input"
-              placeholder="Start typing"
-              v-on:placechanged="getAddressData"
-          >
-          </vue-google-autocomplete>
-          <FinalForm
-            :submit="handleSubmit"
-            @change="updateState">
-            <form slot-scope="props" @submit="props.handleSubmit">
-              <FinalField
-                name="name"
-                :validate="v => v ? null : 'this is required'">
-                <div slot-scope="props" class="field">
-                  <label class="label">{{props.name}}</label>
-                  <input v-on="props.events" :name="props.name" class="input">
-                  <span v-if="props.meta.error && props.meta.touched">
-                    {{ props.meta.error }}
-                  </span>
-                </div>
-              </FinalField>
-              <FinalField
-                name="location_id"
-                :validate="v => v ? null : 'this is required'">
-                <div slot-scope="props" class="field">
-                  <label class="label">{{props.name}}</label>
-                  <input v-on="props.events" :name="props.name" class="input">
-                  <span v-if="props.meta.error && props.meta.touched">
-                    {{ props.meta.error }}
-                  </span>
-                </div>
-              </FinalField>
-            </form>
-          </FinalForm>
+    <div class="column is-one-thirds">
+      <section class="form">
+        <label class="label">{{generateUrl}}</label>
+        <select v-model="selectedService">
+          <option v-for="service in services" v-bind:value="service">
+            {{ service }}
+          </option>
+        </select>
+        <div class="form-control" v-if="selectedService=='yelp'">
+          <input type="text" v-model="business" value="business"></input>
+        </div>
+        <div class="form-control" v-if="selectedService=='google'">
+          <input type="text" v-model="location" value="location"></input>
+          <input type="text" v-model="keyword" value="keyword"></input>
+        </div>
     </section>
-  </section>
   </div>
-
-    <pre v-if="formState" class="position: fixed; right:0; top: 10%"><code>form state:<br><br>{{ JSON.stringify(formState, null, 2) }}</code></pre>
+  <div class="column is-one-thirds">
+    <section class="section">
+      <h1 class="title">Preview</h1>
+      <img
+      v-bind:src="generatePreview"
+    ></img>
+    </section>
   </div>
+  <div class="column is-one-thirds">
+    <pre>
+      {{url}}
+      {{selectedService}}
+      {{business}}
+      {{location}}
+      {{keyword}}
+    </pre>
+  </div>
+</div>
 </div>
 </template>
 
@@ -56,20 +43,37 @@
 
   export default {
     name: 'app',
-    data() {
+    data:  function() {
       return {
-        formState: null,
+        baseUrl: "reviews.n-compass.tv/",
+        services: ['yelp', 'google'],
+        selectedService: "yelp",
+        business: "mcdonalds",
+        location: "",
+        keyword: "",
       }
     },
     methods: {
       async handleSubmit(state) {
        await sleep(2000)
        console.log(state)
+     }
+    },
+    computed: {
+      generatePreview: function() {
+        if(this.selectedService == "yelp"){
+          return "https://thumbnail.ws/get/thumbnail/?apikey=ab45a17344aa033247137cf2d457fc39ee4e7e16a464&url="+ this.baseUrl + this.selectedService + "?business=" + this.business
+        }else if (this.selectedService == "google"){
+          return "https://thumbnail.ws/get/thumbnail/?apikey=ab45a17344aa033247137cf2d457fc39ee4e7e16a464&url="+ this.baseUrl + this.selectedService + "?location=" + this.location + "&keyword=" + this.keyword
+        }
       },
-
-      updateState(state) {
-       this.formState = state
-      },
+      generateUrl: function() {
+        if(this.selectedService == "yelp"){
+          return this.baseUrl + this.selectedService + "?business=" + this.business
+        }else if (this.selectedService == "google"){
+          return this.baseUrl + this.selectedService + "?location=" + this.location + "&keyword=" + this.keyword
+        }
+      }
     }
   }
 </script>

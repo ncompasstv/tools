@@ -1,0 +1,21 @@
+CACHE MANIFEST
+#ver:2/15/2018, 2:11:23 PM
+#plugin:4.9.0
+
+CACHE:
+/vendor.2e5dc954.js
+/client.739518f7.js
+/manifest.bd2a2428.js
+/client.017601df.css
+/vendor.653da357.css
+/favicon.ico
+/icons/android-chrome-192x192.png
+/manifest.json
+/icons/android-chrome-512x512.png
+/
+
+NETWORK:
+*
+
+FALLBACK:
+/ /
