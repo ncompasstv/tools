@@ -1,7 +1,7 @@
 <template>
   <div class="container">
   <div id="app" class="columns">
-    <div class="column is-one-thirds">
+    <div class="column is-two-thirds">
       <section class="form">
         <label class="label">{{generateUrl}}</label>
         <select v-model="selectedService">
@@ -10,14 +10,43 @@
           </option>
         </select>
         <div class="form-control" v-if="selectedService=='yelp'">
+          <label>Business</label>
           <input type="text" v-model="business" value="business"></input>
         </div>
         <div class="form-control" v-if="selectedService=='google'">
-          <input type="text" v-model="location" value="location"></input>
-          <input type="text" v-model="keyword" value="keyword"></input>
+          <div>
+            <label>Location</label>
+            <input type="text" v-model="location" value="location"></input>
+          </div>
+          <div>
+            <label>Keyword</label>
+            <input type="text" v-model="keyword" value="keyword"></input>
+          </div>
         </div>
-    </section>
-  </div>
+        <div>
+          <div>
+            <label>Single</label>
+            <input type="radio" name="layout" v-model="layout" value="single">
+          </div>
+          <div>
+            <label>Multiple</label>
+            <input type="radio" name="layout" v-model="layout" value="multiple">
+          </div>
+          <div v-if="layout=='single'">
+            <label>Offset</label>
+            <input type="number" name="offset" v-model="offset" value="0">
+          </div>
+          <div v-if="layout=='multiple'">
+            <label>Rotate?</label>
+            <input type="checkbox" name="rotate" v-model="rotate">
+          </div>
+          <div v-if="layout=='multiple'">
+            <label>Limit</label>
+            <input type="number" name="limit" v-model="limit">
+          </div>
+        </div>
+      </section>
+      </div>
   <div class="column is-one-thirds">
     <section class="section">
       <h1 class="title">Preview</h1>
@@ -25,15 +54,7 @@
       v-bind:src="generatePreview"
     ></img>
     </section>
-  </div>
-  <div class="column is-one-thirds">
-    <pre>
-      {{url}}
-      {{selectedService}}
-      {{business}}
-      {{location}}
-      {{keyword}}
-    </pre>
+    {{layout}}
   </div>
 </div>
 </div>
@@ -51,6 +72,10 @@
         business: "mcdonalds",
         location: "",
         keyword: "",
+        layout: "single",
+        offset: 0,
+        rotate: false,
+        limit: 2
       }
     },
     methods: {
@@ -68,11 +93,19 @@
         }
       },
       generateUrl: function() {
-        if(this.selectedService == "yelp"){
-          return this.baseUrl + this.selectedService + "?business=" + this.business
-        }else if (this.selectedService == "google"){
-          return this.baseUrl + this.selectedService + "?location=" + this.location + "&keyword=" + this.keyword
+        let url = this.baseUrl
+
+        if(this.rotate){
+          url += rotate
         }
+
+        if(this.selectedService == "yelp"){
+          url += this.selectedService + "?business=" + this.business
+        }else if (this.selectedService == "google"){
+          url += this.selectedService + "?location=" + this.location + "&keyword=" + this.keyword
+        }
+        url += "&layout=" + this.layout + "&offset=" + this.offset + "&rotate=" + this.rotate + "&limit=" + this.limit
+        return url
       }
     }
   }
