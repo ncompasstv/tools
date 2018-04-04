@@ -1,6 +1,6 @@
 # tools
 
-> collection of small tools
+## collection of small tools, kind of a mess until I figure out how to structure it
 
 ## Commands
 
